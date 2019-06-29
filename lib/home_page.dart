@@ -38,6 +38,16 @@ class HomePage extends StatelessWidget {
       future: Provider.of<PostApiService>(context).getPosts(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                snapshot.error.toString(),
+                textAlign: TextAlign.center,
+                textScaleFactor: 1.3,
+              ),
+            );
+          }
+
           // Snapshot's data is the Response
           // You can see there's no type safety here (only List<dynamic>)
           final List posts = json.decode(snapshot.data.bodyString);
