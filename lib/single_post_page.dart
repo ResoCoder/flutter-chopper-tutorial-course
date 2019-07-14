@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'data/post_api_service.dart';
+import 'model/built_post.dart';
 
 class SinglePostPage extends StatelessWidget {
   final int postId;
@@ -20,11 +21,11 @@ class SinglePostPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Chopper Blog'),
       ),
-      body: FutureBuilder<Response>(
+      body: FutureBuilder<Response<BuiltPost>>(
         future: Provider.of<PostApiService>(context).getPost(postId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            final Map post = json.decode(snapshot.data.bodyString);
+            final post = snapshot.data.body;
             return _buildPost(post);
           } else {
             return Center(
@@ -36,20 +37,20 @@ class SinglePostPage extends StatelessWidget {
     );
   }
 
-  Padding _buildPost(Map post) {
+  Padding _buildPost(BuiltPost post) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: <Widget>[
           Text(
-            post['title'],
+            post.title,
             style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
             ),
           ),
           SizedBox(height: 8),
-          Text(post['body']),
+          Text(post.body),
         ],
       ),
     );
